@@ -1,131 +1,173 @@
-var quizAnswers = $('.quiz-answers');
-var quizQuestion = $('.quiz-question');
-var correctAnswer = $('.correct-result');
-var incorrectAnswer = $('.incorrect-result');
-var scoreResult = $('.score-result');
-var allDone = $('.finished');
-var timerEl = $('.timer-seconds');
-var startBtn = $('.startBtn');
-var nameInput = $('.name-input');
+const startButton = document.getElementById('start-btn');
+const nextButton = document.getElementById('next-btn');
+const questionContainerElement = document.getElementById('question-container');
+const questionElement = document.getElementById('question');
+const answerButtonsElement = document.getElementById('answer-buttons');
+const timerEl = document.querySelector('.time-remaining');
+const scoreContainerElement = document.getElementById('score-container');
+const scoreNum = document.getElementById('scoreNum');
+const inputFormEl = document.getElementById('high-score-form');
 
-// Object for all questions
-var questions = {
-  qOne: 'One',
-  qTwo: 'two',
-  qThree: 'three',
-  qFour: 'four',
-  qFive: 'five',
-  qSix: 'six',
-  qSeven: 'seven',
-  qEight: 'eight',
-  qNine: 'nine',
-  qTen: 'ten',
-};
+let shuffledQuestions, currentQuestionIndex;
+let score = 0;
 
-// Object for all answers
-var answers = {
-  ansOne: ['one', 'two', 'three', 'four'],
-  ansTwo: ['one', 'two', 'three', 'four'],
-  ansThree: ['one', 'two', 'three', 'four'],
-  ansFour: ['one', 'two', 'three', 'four'],
-  ansFive: ['one', 'two', 'three', 'four'],
-  ansSix: ['one', 'two', 'three', 'four'],
-  ansSeven: ['one', 'two', 'three', 'four'],
-  ansEight: ['one', 'two', 'three', 'four'],
-  ansNine: ['one', 'two', 'three', 'four'],
-  ansTen: ['one', 'two', 'three', 'four'],
-};
+startButton.addEventListener('click', startGame);
+nextButton.addEventListener('click', () => {
+  currentQuestionIndex++;
+  setNextQuestion();
+  resetScore();
+});
 
-// function to pull in question
-function getQuestion(e) {
-  var keys = Object.keys(questions);
-  var questionText = questions[keys[Math.floor(Math.random() * keys.length)]];
-  // display question to screen if there is no current question, otherwise clear previous first then display
-  if (!quizQuestion.children()) {
-    var questionDis = $('<p>');
-    questionDis.text(questionText);
-    quizQuestion.append(questionDis);
-  } else {
-    quizQuestion.children().remove();
-    var questionDis = $('<p>');
-    questionDis.text(questionText);
-    quizQuestion.append(questionDis);
+function startGame() {
+  startTimer();
+  startButton.classList.add('hide');
+  shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+  currentQuestionIndex = 0;
+  scoreNum.innerText = 0;
+  questionContainerElement.classList.remove('hide');
+  scoreContainerElement.classList.remove('hide');
+  setNextQuestion();
+}
+
+function setNextQuestion() {
+  resetState();
+  showQuestion(shuffledQuestions[currentQuestionIndex]);
+}
+
+function showQuestion(question) {
+  questionElement.innerText = question.question;
+  question.answers.forEach((answer) => {
+    const button = document.createElement('button');
+    button.innerText = answer.text;
+    button.classList.add('btn');
+    if (answer.correct) {
+      button.dataset.correct = answer.correct;
+    }
+    button.addEventListener('click', selectAnswer);
+    button.addEventListener('click', resetScore);
+    button.addEventListener('click', updateScore);
+    answerButtonsElement.appendChild(button);
+  });
+}
+
+function resetState() {
+  clearStatusClass(document.body);
+  nextButton.classList.add('hide');
+  while (answerButtonsElement.firstChild) {
+    answerButtonsElement.removeChild(answerButtonsElement.firstChild);
   }
-  e.preventDefault();
 }
 
-// function to pull in answer options
-function getAnswers(e) {
-  var keys = Object.keys(answers);
-  var answerText = answers[keys[Math.floor(Math.random() * keys.length)]];
-  // Attach list answers to the ordered list
-  //   if ordered list is currently empty, attach, otherwise, empty list first, then attach
-  if (!quizAnswers.children()) {
-    var listAnswer = $('<li>');
-    listAnswer.text(answerText);
-    quizAnswers.append(listAnswer);
+function selectAnswer(e) {
+  const selectedButton = e.target;
+  const correct = selectedButton.dataset.correct;
+  setStatusClass(document.body, correct);
+  Array.from(answerButtonsElement.children).forEach((button) => {
+    setStatusClass(button, button.dataset.correct);
+  });
+  if (shuffledQuestions.length > currentQuestionIndex + 1) {
+    nextButton.classList.remove('hide');
   } else {
-    quizAnswers.children('li').remove();
-    var listAnswer = $('<li>');
-    listAnswer.text(answerText);
-    quizAnswers.append(listAnswer);
+    // run a function that displays input for high score name
+    enterName();
+    startButton.innerText = 'Restart';
+    startButton.classList.remove('hide');
   }
-  e.preventDefault();
 }
 
-// Generate the score result and display to screen
-function generateScore(e) {
-  e.preventDefault();
-  var scorePara = $('<p>');
-  var scoreNumber = $('<span>');
-  //   function to generate score Number based off questions answered correctly
-  scorePara.append(scoreNumber);
-  scorePara.text('Your score is:');
-  scoreResult.append(scorePara);
+function setStatusClass(element, correct) {
+  clearStatusClass(element);
+  if (correct) {
+    element.classList.add('correct');
+  } else {
+    element.classList.add('wrong');
+  }
 }
 
-// generate the time remaining for the quiz
+function clearStatusClass(element) {
+  element.classList.remove('correct');
+  element.classList.remove('wrong');
+}
+// function to end game whenever the timer is equal to quiz over
+// function that tracks how many questions were answered correctly
+function updateScore(e) {
+  const selectedButton = e.target;
+  if (selectedButton.classList.contains('correct')) {
+    score++;
+  }
+  scoreNum.innerText = score;
+}
+// reset the score to 0 if it's the first question
+function resetScore() {
+  if (currentQuestionIndex === 0) {
+    score = 0;
+    scoreNum.innerText = score;
+  }
+}
+
+// function here that will display a text box to enter name for high score page
+function enterName() {
+  if (
+    (shuffledQuestions.length = currentQuestionIndex) ||
+    timerEl.innerText === 'Quiz Over'
+  ) {
+    inputFormEl.classList.remove('hide');
+    questionContainerElement.classList.add('hide');
+    answerButtonsElement.classList.add('hide');
+    startButton.innerText = 'Restart';
+    startButton.classList.remove('hide');
+  }
+}
+// name will be stored in local storage
+
 function startTimer() {
   var timeLeft = 20;
   var timeInterval = setInterval(function () {
     if (timeLeft > 1) {
-      timerEl.text(`${timeLeft} seconds remaining.`);
+      timerEl.textContent = `${timeLeft} seconds remaining.`;
       timeLeft--;
     } else if (timeLeft === 1) {
-      timerEl.text(`${timeLeft} second remaining`);
+      timerEl.textContent = `${timeLeft} second remaining`;
       timeLeft--;
     } else {
-      timerEl.text('Quiz Over');
+      timerEl.textContent = 'Quiz Over';
       clearInterval(timeInterval);
+      enterName();
     }
   }, 1000);
 }
 
-// display score and form to submit to leaderboard on either quiz end or timer end
-function displaySubmit(e) {
-  e.preventDefault();
-  var nameForm = $('<form>');
-  nameForm.addClass('high-score-name');
-  var nameLabel = $('<label>');
-  nameLabel.attr('for', 'name');
-  nameLabel.text('Enter your name here to go on the leaderboard!');
-  var inputForm = $('<input>');
-  inputForm.attr('type', 'text');
-  inputForm.attr('id', 'name');
-  inputForm.attr('name', 'name');
-  var formBreak = $('<br>');
-  nameLabel.append(formBreak);
-  nameLabel.append(inputForm);
-  nameForm.append(nameLabel);
-  nameInput.append(nameForm);
-  inputForm.append(formBreak);
-  var submitInput = $('<input>');
-  submitInput.prop('type', 'submit');
-  submitInput.prop('value', 'Submit');
-  inputForm.append(submitInput);
-}
-
-startBtn.click(getQuestion);
-startBtn.click(getAnswers);
-startBtn.click(startTimer);
-startBtn.click(displaySubmit);
+const questions = [
+  {
+    question: 'What is 2 + 2?',
+    answers: [
+      { text: '4', correct: true },
+      { text: '22', correct: false },
+    ],
+  },
+  {
+    question: 'Who is the best YouTuber?',
+    answers: [
+      { text: 'Web Dev Simplified', correct: true },
+      { text: 'Traversy Media', correct: false },
+      { text: 'Dev Ed', correct: false },
+      { text: 'Fun Fun Function', correct: false },
+    ],
+  },
+  {
+    question: 'Is web development fun?',
+    answers: [
+      { text: 'Kinda', correct: false },
+      { text: 'YES!!!', correct: true },
+      { text: 'Um no', correct: false },
+      { text: 'IDK', correct: false },
+    ],
+  },
+  {
+    question: 'What is 4 * 2?',
+    answers: [
+      { text: '6', correct: false },
+      { text: '8', correct: true },
+    ],
+  },
+];

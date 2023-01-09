@@ -4,33 +4,50 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link rel="stylesheet" href="./assets/reset.css" /> -->
+    <link rel="stylesheet" href="./assets/reset.css" />
     <link rel="stylesheet" href="./assets/style.css" />
-    <title>Coding Quiz!</title>
+
+    <title>Coding Quiz</title>
   </head>
   <body>
-    <section class="header">
-      <header class="header-top">
-        <h1 class="title">Coding Quiz Challenge</h1>
-        <h3 class="high-score">View High Scores</h3>
-        <h3 class="timer">Time: <span class="timer-seconds">0</span></h3>
-      </header>
-      <button class="startBtn">Begin</button>
-    </section>
-    <section class="quiz-body">
-      <div class="quiz-question"></div>
-      <ol type="A" class="quiz-answers"></ol>
-    </section>
-    <section class="question-result">
-      <div class="correct-result"></div>
-      <div class="incorrect-result"></div>
-    </section>
-    <section class="quiz-results">
-      <div class="finished"></div>
-      <div class="score-result"></div>
-      <div class="name-input"></div>
-    </section>
-    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <header class="top-header">
+      <h1 class="title">Coding Quiz Challenge</h1>
+      <h3 class="high-score-link">View High Scores</h3>
+      <h3 class="timer">
+        Time Left: <span class="time-remaining">Click Start</span>
+      </h3>
+    </header>
+    <div class="container">
+      <div id="score-container" class="hide">
+        <div id="score">Score: <span id="scoreNum"></span></div>
+      </div>
+      <div id="question-container" class="hide">
+        <div id="question">Question</div>
+        <div id="answer-buttons" class="btn-grid">
+          <button class="btn">Answer 1</button>
+          <button class="btn">Answer 2</button>
+          <button class="btn">Answer 3</button>
+          <button class="btn">Answer 4</button>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="start-btn" class="start-btn btn">Start</button>
+        <button id="next-btn" class="next-btn btn hide">Next</button>
+      </div>
+      <form class="hide" id="high-score-form">
+        <label for="fname" id="formLabel"
+          >Submit your name for the High Score List!</label
+        ><br /><br />
+        <input
+          type="text"
+          id="fname"
+          name="fname"
+          value="Enter your name here..."
+        />
+        <input type="submit" value="Submit" id="submitBtn" />
+      </form>
+    </div>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.3.js"></script> -->
     <script src="./assets/app.js"></script>
   </body>
 </html>
