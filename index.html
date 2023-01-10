@@ -10,20 +10,26 @@
     <title>Coding Quiz</title>
   </head>
   <body>
+    <!-- header that will always be at top of page -->
     <header class="top-header">
       <h1 class="title">Coding Quiz Challenge</h1>
+      <!-- link to view high score page -->
       <h3 class="high-score-link">View High Scores</h3>
+      <!-- timer display -->
       <h3 class="timer">
         Time Left: <span class="time-remaining">Click Start</span>
       </h3>
     </header>
     <div class="container">
+      <!-- constantly display the score that will update throughout quiz -->
       <div id="score-container" class="hide">
         <div id="score">Score: <span id="scoreNum"></span></div>
       </div>
       <div id="question-container" class="hide">
+        <!-- question will be inserted here -->
         <div id="question">Question</div>
         <div id="answer-buttons" class="btn-grid">
+          <!-- answer buttons -->
           <button class="btn">Answer 1</button>
           <button class="btn">Answer 2</button>
           <button class="btn">Answer 3</button>
@@ -31,10 +37,12 @@
         </div>
       </div>
       <div class="controls">
+        <!-- next and start button that will display depending on state of game -->
         <button id="start-btn" class="start-btn btn">Start</button>
         <button id="next-btn" class="next-btn btn hide">Next</button>
       </div>
       <form class="hide" id="high-score-form">
+        <!-- input form to input name for high score page -->
         <label for="fname" id="formLabel"
           >Submit your name for the High Score List!</label
         ><br /><br />
@@ -44,6 +52,7 @@
           name="fname"
           value="Enter your name here..."
         />
+        <!-- submit button for input form -->
         <input type="submit" value="Submit" id="submitBtn" />
       </form>
     </div>

@@ -1,3 +1,4 @@
+// define variables
 const startButton = document.getElementById('start-btn');
 const nextButton = document.getElementById('next-btn');
 const questionContainerElement = document.getElementById('question-container');
@@ -8,41 +9,57 @@ const scoreContainerElement = document.getElementById('score-container');
 const scoreNum = document.getElementById('scoreNum');
 const inputFormEl = document.getElementById('high-score-form');
 
+// initialize variables for future functions
 let shuffledQuestions, currentQuestionIndex;
 let score = 0;
 
+// add event listeners to buttons
 startButton.addEventListener('click', startGame);
+startButton.addEventListener('click', inputFormEl.classList.add('hide'));
 nextButton.addEventListener('click', () => {
   currentQuestionIndex++;
   setNextQuestion();
   resetScore();
 });
 
+// function that starts the game
 function startGame() {
+  // starts the question timer
   startTimer();
+  // hide start button
   startButton.classList.add('hide');
+  // create an array of questions so that it is random every time
   shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+  // set index to 0 for first question
   currentQuestionIndex = 0;
+  // set score to 0
   scoreNum.innerText = 0;
+  // display score and question
   questionContainerElement.classList.remove('hide');
   scoreContainerElement.classList.remove('hide');
   setNextQuestion();
 }
 
+// function that sets next question in the random array
 function setNextQuestion() {
   resetState();
   showQuestion(shuffledQuestions[currentQuestionIndex]);
 }
 
+// function that displays the question
 function showQuestion(question) {
+  // set the question text of the object to the question element
   questionElement.innerText = question.question;
+  // create an answer button for each answer option
   question.answers.forEach((answer) => {
     const button = document.createElement('button');
     button.innerText = answer.text;
     button.classList.add('btn');
+    // if the answer is true set the data type to correct
     if (answer.correct) {
       button.dataset.correct = answer.correct;
     }
+    // add listeners to answer buttons
     button.addEventListener('click', selectAnswer);
     button.addEventListener('click', resetScore);
     button.addEventListener('click', updateScore);
@@ -50,7 +67,9 @@ function showQuestion(question) {
   });
 }
 
+// function that resets state of styles and questions at click of next button
 function resetState() {
+  // clears all wrong or correct styles
   clearStatusClass(document.body);
   nextButton.classList.add('hide');
   while (answerButtonsElement.firstChild) {
@@ -59,24 +78,28 @@ function resetState() {
 }
 
 function selectAnswer(e) {
+  // select which answer button is targeted
   const selectedButton = e.target;
+  // define the variable that will make the correct answer have the correct attribute
   const correct = selectedButton.dataset.correct;
+  // run the function that checks if the selected button has the correct attribute
   setStatusClass(document.body, correct);
   Array.from(answerButtonsElement.children).forEach((button) => {
     setStatusClass(button, button.dataset.correct);
   });
+  // if there are questions left to show then show next button
   if (shuffledQuestions.length > currentQuestionIndex + 1) {
     nextButton.classList.remove('hide');
   } else {
-    // run a function that displays input for high score name
+    // otherwise run a function that displays input for high score name
     enterName();
-    startButton.innerText = 'Restart';
-    startButton.classList.remove('hide');
   }
 }
 
 function setStatusClass(element, correct) {
+  // clear previous style
   clearStatusClass(element);
+  // check to see if button selected is correct or wrong and set style accordingly
   if (correct) {
     element.classList.add('correct');
   } else {
@@ -84,11 +107,12 @@ function setStatusClass(element, correct) {
   }
 }
 
+// function to clear the correct or wrong style class
 function clearStatusClass(element) {
   element.classList.remove('correct');
   element.classList.remove('wrong');
 }
-// function to end game whenever the timer is equal to quiz over
+
 // function that tracks how many questions were answered correctly
 function updateScore(e) {
   const selectedButton = e.target;
@@ -107,67 +131,143 @@ function resetScore() {
 
 // function here that will display a text box to enter name for high score page
 function enterName() {
-  if (
-    (shuffledQuestions.length = currentQuestionIndex) ||
-    timerEl.innerText === 'Quiz Over'
-  ) {
-    inputFormEl.classList.remove('hide');
-    questionContainerElement.classList.add('hide');
-    answerButtonsElement.classList.add('hide');
-    startButton.innerText = 'Restart';
-    startButton.classList.remove('hide');
-  }
+  setTimeout(() => {
+    if (
+      (shuffledQuestions.length = currentQuestionIndex) ||
+      // function to end game whenever the timer is equal to quiz over
+      timerEl.innerText === 'Quiz Over'
+    ) {
+      inputFormEl.classList.remove('hide');
+      questionContainerElement.classList.add('hide');
+      answerButtonsElement.classList.add('hide');
+      nextButton.classList.add('hide');
+    }
+  }, 1000);
 }
-// name will be stored in local storage
+// entered name will be stored in local storage
+// function to show high score page after view high scores is clicked
+// retrieve any names submitted from local storage and display on high score page
 
+// timer function
 function startTimer() {
-  var timeLeft = 20;
+  var timeLeft = 60;
   var timeInterval = setInterval(function () {
-    if (timeLeft > 1) {
+    if (timeLeft > 1 && shuffledQuestions.length != currentQuestionIndex) {
       timerEl.textContent = `${timeLeft} seconds remaining.`;
       timeLeft--;
-    } else if (timeLeft === 1) {
+    } else if (
+      timeLeft === 1 &&
+      shuffledQuestions.length != currentQuestionIndex
+    ) {
       timerEl.textContent = `${timeLeft} second remaining`;
       timeLeft--;
     } else {
       timerEl.textContent = 'Quiz Over';
       clearInterval(timeInterval);
+      // function to end game whenever the timer is equal to quiz over
       enterName();
     }
   }, 1000);
 }
 
+// question array of objects
 const questions = [
   {
-    question: 'What is 2 + 2?',
+    question:
+      'What kind of statement is used to execute actions based on a trigger or condition?',
     answers: [
-      { text: '4', correct: true },
-      { text: '22', correct: false },
+      { text: 'Fired Event', correct: false },
+      { text: 'Regular Expression', correct: false },
+      { text: 'Boolean Variable', correct: false },
+      { text: 'Conditional Statement', correct: true },
     ],
   },
   {
-    question: 'Who is the best YouTuber?',
+    question:
+      'What is a JavaScript element that represents either TRUE or FALSE values?',
     answers: [
-      { text: 'Web Dev Simplified', correct: true },
-      { text: 'Traversy Media', correct: false },
-      { text: 'Dev Ed', correct: false },
-      { text: 'Fun Fun Function', correct: false },
+      { text: 'Condition', correct: false },
+      { text: 'Boolean', correct: true },
+      { text: 'RegExp', correct: false },
+      { text: 'Event', correct: false },
     ],
   },
   {
-    question: 'Is web development fun?',
+    question:
+      'This is what you call the guide that defines coding conventions for all projects.',
     answers: [
-      { text: 'Kinda', correct: false },
-      { text: 'YES!!!', correct: true },
-      { text: 'Um no', correct: false },
-      { text: 'IDK', correct: false },
+      { text: 'Main textbook', correct: false },
+      { text: 'Developers reference', correct: false },
+      { text: 'Coding dictionary', correct: false },
+      { text: 'Style guide', correct: true },
     ],
   },
   {
-    question: 'What is 4 * 2?',
+    question:
+      'What is the element called that is used to describe the set of variables, objects, and functions you explicitly have access to?',
     answers: [
-      { text: '6', correct: false },
-      { text: '8', correct: true },
+      { text: 'Scope', correct: true },
+      { text: 'Restriction', correct: false },
+      { text: 'Output Level', correct: false },
+      { text: 'Range', correct: false },
+    ],
+  },
+  {
+    question:
+      'What is the element used - and hidden - in code that explains things and makes the content more readable?',
+    answers: [
+      { text: 'Comparisons', correct: false },
+      { text: 'Comments', correct: true },
+      { text: 'Notes', correct: false },
+      { text: 'Quotations', correct: false },
+    ],
+  },
+  {
+    question:
+      'In JavaScript, what element is used to store multiple values in a single variable?',
+    answers: [
+      { text: 'Variables', correct: false },
+      { text: 'Strings', correct: false },
+      { text: 'Functions', correct: false },
+      { text: 'Arrays', correct: true },
+    ],
+  },
+  {
+    question:
+      'In JavaScript, what element is used to store and manipulate text, usually in multiples?',
+    answers: [
+      { text: 'Strings', correct: true },
+      { text: 'Recorders', correct: false },
+      { text: 'Arrays', correct: false },
+      { text: 'Variables', correct: false },
+    ],
+  },
+  {
+    question:
+      'What is the type of loop that continues through a block of code as long as the specified condition remains TRUE?',
+    answers: [
+      { text: 'While Loop', correct: true },
+      { text: 'Else Loop', correct: false },
+      { text: 'Conditional Loop', correct: false },
+      { text: 'For Loop', correct: false },
+    ],
+  },
+  {
+    question: 'What can loops offer JavaScript code as a whole?',
+    answers: [
+      { text: 'Cross-platform support', correct: false },
+      { text: 'Added plug-ins', correct: false },
+      { text: 'Cleaner syntax', correct: false },
+      { text: 'Improved performance', correct: true },
+    ],
+  },
+  {
+    question: 'Where is the JavaScript placed inside an HTML document or page?',
+    answers: [
+      { text: 'In the <footer> section', correct: false },
+      { text: 'In the <title> section', correct: false },
+      { text: 'In the <body> and <head> sections', correct: true },
+      { text: 'In the <meta> section', correct: false },
     ],
   },
 ];

@@ -1,3 +1,4 @@
+/* global styles */
 *,
 *::before,
 *::after {
@@ -10,6 +11,7 @@
   --hue-correct: 145;
 }
 
+/* centering and flexing main body card */
 body {
   --hue: var(--hue-neutral);
   padding: 0;
@@ -21,7 +23,7 @@ body {
   align-items: center;
   background-color: hsl(var(--hue), 100%, 20%);
 }
-
+/* color styles depending on answer choice */
 body.correct {
   --hue: var(--hue-correct);
 }
@@ -29,7 +31,7 @@ body.correct {
 body.wrong {
   --hue: var(--hue-wrong);
 }
-
+/* styling main question and answer container */
 .container {
   width: 800px;
   max-width: 80%;
@@ -45,7 +47,7 @@ body.wrong {
   gap: 10px;
   margin: 20px 0;
 }
-
+/* styling color and boxes for all buttons */
 .btn {
   --hue: var(--hue-neutral);
   border: 1px solid hsl(var(--hue), 100%, 30%);
@@ -55,33 +57,33 @@ body.wrong {
   color: white;
   outline: none;
 }
-
+/* on hover create a border */
 .btn:hover {
   border-color: black;
 }
-
+/* set color if answer is correct */
 .btn.correct {
   --hue: var(--hue-correct);
   color: black;
 }
-
+/* set color if answer is wrong */
 .btn.wrong {
   --hue: var(--hue-wrong);
 }
-
+/* styling control buttons */
 .start-btn,
 .next-btn {
   font-size: 1.5rem;
   font-weight: bold;
   padding: 10px 20px;
 }
-
+/* define where control buttons will be located */
 .controls {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
+/* global hide class set to display none */
 .hide {
   display: none;
 }
@@ -98,7 +100,7 @@ html {
   align-items: center;
   background-color: #dfdfdf;
 }
-
+/* fixing top header to the top of the page */
 .top-header {
   position: fixed;
   top: 0;
@@ -108,34 +110,35 @@ html {
   padding: 10px;
   box-shadow: 0 0 10px 2px;
 }
-
+/* setting font size of title */
 .title {
   font-size: 3rem;
   text-align: center;
 }
-
+/* setting font size of high score link */
 .high-score-link {
   font-size: 1.25rem;
   float: left;
 }
-
+/* setting font size of timer */
 .timer {
   font-size: 1.25rem;
   float: right;
 }
-
+/* making sure the score is on the right side and has space */
 #score-container {
   float: right;
+  padding-left: 10px;
 }
-
+/* move submit button to the right */
 #submitBtn {
   float: right;
 }
-
+/* making sure the input form has space */
 #high-score-form {
   padding: 10px;
 }
-
+/* increasing font size of label text */
 #formLabel {
   font-size: 1.25rem;
 }
