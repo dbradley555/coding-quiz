@@ -23,3 +23,7 @@ I followed WebDevSimplified's tutorial on YouTube for the base of the quiz appli
 ## License
 
 Please refer to the License in the Repo.
+
+## Link
+
+Link to the live application: https://dbradley555.github.io/coding-quiz/
